@@ -32,7 +32,7 @@ class CheckProjectPerms
         
         if($projectId) {
             if (!$this->repository->skipPresenter()->isOwner($projectId, $userId) and !$this->repository->skipPresenter()->hasMember($projectId, $userId)) {
-                return ['error' => 'Access Forbidden'];
+                return ['error' => 'Acesso negado.'];
             }
         }
 

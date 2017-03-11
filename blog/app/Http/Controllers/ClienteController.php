@@ -4,6 +4,8 @@ namespace Blog\Http\Controllers;
 
 use Blog\Repositories\ClienteRepository;
 use Blog\Services\ClienteService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -68,7 +70,14 @@ class ClienteController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->find($id);
+        try {
+            return $this->repository->find($id);
+        }
+        catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'message' => 'Cliente não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao buscar o Cliente.'];
+        }
     }
 
     /**
@@ -91,7 +100,13 @@ class ClienteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->service->update($request->all(), $id);
+        try {
+            return $this->service->update($request->all(), $id);
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'message' => 'Cliente não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao atualizar o Cliente.'];
+        }
     }
 
     /**
@@ -102,6 +117,15 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        $this->repository->delete($id);
+        try {
+            $this->repository->delete($id);
+            return ['success' => true, 'message' => 'Cliente excluido com sucesso!'];
+        } catch (QueryException $e) {
+            return ['error'=>true, 'message' => 'Cliente não pode ser excluido pois está vinculado a um Projeto.'];
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'message' => 'Cliente não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao excluir o Cliente.'];
+        }
     }
 }

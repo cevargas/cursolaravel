@@ -5,9 +5,6 @@ namespace Blog\Http\Controllers;
 use Blog\Repositories\ProjectRepository;
 use Blog\Services\ProjectService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use LucaDegasperi\OAuth2Server\Authorizer;
 
 class ProjectFileController extends Controller
 {
@@ -39,7 +36,6 @@ class ProjectFileController extends Controller
      */
     public function index()
     {
-
         return $this->repository->findWhere(['owner_id'=>\Authorizer::getResourceOwnerId()]);
     }
 

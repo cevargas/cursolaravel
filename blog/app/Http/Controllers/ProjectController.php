@@ -4,8 +4,8 @@ namespace Blog\Http\Controllers;
 
 use Blog\Repositories\ProjectRepository;
 use Blog\Services\ProjectService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use LucaDegasperi\OAuth2Server\Authorizer;
 
 class ProjectController extends Controller
 {
@@ -37,8 +37,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-
-        return $this->repository->findWhere(['owner_id'=>\Authorizer::getResourceOwnerId()]);
+        return $this->repository->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
     }
 
     /**
@@ -70,7 +69,13 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->find($id);
+        try {
+            return $this->repository->find($id);
+        } catch (ModelNotFoundException $e) {
+            return ['erro' => true, 'message' => 'Projeto não encontrado'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao buscar o Projeto.'];
+        }
     }
 
     /**
@@ -93,7 +98,13 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->service->update($request->all(), $id);
+        try {
+            return $this->service->update($request->all(), $id);
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'message' => 'Projeto não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao atualizar o Projeto.'];
+        }
     }
 
     /**
@@ -104,6 +115,13 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        $this->repository->delete($id);
+        try {
+            $this->repository->delete($id);
+            return ['success' => true, 'message' => 'Projeto excluido com sucesso!'];
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'message' => 'Projeto não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao excluir o Projeto.'];
+        }
     }
 }

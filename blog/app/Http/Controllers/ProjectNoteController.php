@@ -4,6 +4,7 @@ namespace Blog\Http\Controllers;
 
 use Blog\Repositories\ProjectNoteRepository;
 use Blog\Services\ProjectNoteService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class ProjectNoteController extends Controller
@@ -86,22 +87,33 @@ class ProjectNoteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id, $noteId)
     {
-        return $this->service->update($request->all(), $noteId);
+        try {
+            return $this->service->update($request->all(), $noteId);
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'message' => 'Nota do Projeto não encontrada.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao atualizar a Nota do Projeto.'];
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, $noteId)
     {
-        $this->repository->delete($noteId);
+        try {
+            $this->repository->delete($noteId);
+            return ['success' => true, 'message' => 'Nota do Projeto excluida com sucesso!'];
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'message' => 'Nota do Projeto não encontrada.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao excluir a Nota do Projeto.'];
+        }
     }
 }
