@@ -40,8 +40,11 @@ Route::group(['middleware'=>'oauth'], function(){
             Route::delete('{id}/tasks/{taskId}', 'ProjectTaskController@destroy');
 
             Route::post('{id}/file', 'ProjectFileController@store');
-
-            Route::post('{id}/members', 'ProjectMemberController@index');
+            
+            Route::get('{id}/members', 'ProjectController@members');
+            Route::post('{id}/members', 'ProjectController@addMember');
+            Route::delete('{id}/members/{userId}', 'ProjectController@removeMember');
+            Route::get('{id}/members/{userId}', 'ProjectController@isMember');
         });
     });
 });

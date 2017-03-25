@@ -4,6 +4,7 @@ namespace Blog\Services;
 
 use Blog\Repositories\ProjectRepository;
 use Blog\Validators\ProjectValidator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 use Illuminate\Filesystem\Filesystem;
@@ -79,5 +80,55 @@ class ProjectService
         $project->files()->create($data);
 
         $this->storage->put($file->getClientOriginalName(), $this->filesystem->get($file));
+    }
+
+    public function members($id){
+        try {
+            $projeto = $this->repository->skipPresenter()->find($id);
+            if(sizeof($projeto->members)) {
+                return $projeto->members;
+            }
+            else {
+                return ['error' => false, 'message' => 'Nenhum membro vinculado a este projeto'];
+            }
+        } catch (\Exception $e) {
+            return ['error'=> true, 'message' => 'Falha ao buscar os Membros do projeto.'];
+        }
+    }
+
+    public function addMember(array $data, $id){
+        //buscar o projeto e add membro
+        try {
+            $projeto = $this->repository->skipPresenter()->find($id);
+            $projeto->members()->attach($data['user_id']);
+
+            return ['success' => true];
+
+        } catch (\Exception $e) {
+            return ['error'=> true, 'message' => 'Falha ao adicionar membro ao Projeto.'];
+        }
+    }
+    
+    public function removeMember($id, $userId){
+        //buscar o projeto e remover membro
+        try {
+            $projeto = $this->repository->skipPresenter()->find($id);
+            $projeto->members()->detach($userId);
+
+            return ['success' => true];
+
+        } catch (\Exception $e) {
+            return ['error'=> true, 'message' => 'Falha ao adicionar membro ao Projeto.'];
+        }
+    }
+
+    public function isMember($id, $userId){
+        try {
+            $result = $this->repository->skipPresenter()->find($id)->members()->find($userId);
+            return $result ? ['success' => true, 'message' => 'É membro'] : ['error' => true, 'message' => 'Não é membro'];
+
+        } catch (\Exception $e) {
+            return ['error'=> true, 'message' => 'Falha ao verificar se Usuario é membro do Projeto.'];
+        }
     }
 }

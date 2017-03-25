@@ -124,4 +124,42 @@ class ProjectController extends Controller
             return ['error'=>true, 'message' => 'Ocorreu algum erro ao excluir o Projeto.'];
         }
     }
+
+    /**
+     * Retorna lista com membros do projeto
+     * @param $id
+     * @return array
+     */
+    public function members($id){
+        return $this->service->members($id);
+    }
+
+    /**
+     * Adiciona membro ao projeto
+     * @param Request $request
+     * @param $id
+     * @return array
+     */
+    public function addMember(Request $request, $id){
+        return $this->service->addMember($request->all(), $id);
+    }
+
+    /**
+     * Remove membro do projeto
+     * @param $id
+     * @param $userId
+     * @return array
+     */
+    public function removeMember($id, $userId){
+        return $this->service->removeMember($id, $userId);
+    }
+
+    /**
+     * Verifica se um usuario é membro do projeto
+     * @param $userId
+     * @return mixed
+     */
+    public function isMember($id, $userId){
+        return $this->service->isMember($id, $userId);
+    }
 }

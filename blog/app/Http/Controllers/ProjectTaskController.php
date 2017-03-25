@@ -8,11 +8,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class ProjectTaskController extends Controller
-{
-
-    /**
-     * @var ProjectTaskRepository
-     */
+{  /**
+ * @var ProjectTaskRepository
+ */
     private $repository;
     /**
      * @var ProjectTaskService
