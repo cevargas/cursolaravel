@@ -51,5 +51,12 @@ $factory->define(Blog\Entities\ProjectNote::class, function ($faker) {
     ];
 });
 
-
-
+$factory->define(Blog\Entities\ProjectTask::class, function ($faker) {
+    return [
+        'project_id' => rand(1, 10),
+        'name' => $faker->word,
+        'start_date' => $faker->dateTime('now'),
+        'due_date' => $faker->dateTime('now'),
+        'status' => rand(1, 3)
+    ];
+});

@@ -37,5 +37,10 @@ class BlogRepositoryProvider extends ServiceProvider
             \Blog\Repositories\ProjectNoteRepository::class,
             \Blog\Repositories\ProjectNoteRepositoryEloquent::class
         );
+
+        $this->app->bind(
+            \Blog\Repositories\ProjectTaskRepository::class,
+            \Blog\Repositories\ProjectTaskRepositoryEloquent::class
+        );
     }
 }

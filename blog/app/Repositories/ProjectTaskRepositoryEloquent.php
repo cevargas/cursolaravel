@@ -4,13 +4,14 @@ namespace Blog\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use Blog\Entities\ProjectNote;
+use Blog\Entities\ProjectTask;
+use Blog\Validators\ProjectTaskValidator;
 
 /**
- * Class ProjectNoteRepositoryEloquent
+ * Class ProjectTaskRepositoryEloquent
  * @package namespace Blog\Repositories;
  */
-class ProjectNoteRepositoryEloquent extends BaseRepository implements ProjectNoteRepository
+class ProjectTaskRepositoryEloquent extends BaseRepository implements ProjectTaskRepository
 {
     /**
      * Specify Model class name
@@ -19,10 +20,20 @@ class ProjectNoteRepositoryEloquent extends BaseRepository implements ProjectNot
      */
     public function model()
     {
-        return ProjectNote::class;
+        return ProjectTask::class;
     }
 
-    
+    /**
+    * Specify Validator class name
+    *
+    * @return mixed
+    */
+    public function validator()
+    {
+
+        return ProjectTaskValidator::class;
+    }
+
 
     /**
      * Boot up the repository, pushing criteria

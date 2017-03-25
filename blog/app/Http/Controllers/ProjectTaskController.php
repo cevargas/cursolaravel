@@ -2,29 +2,29 @@
 
 namespace Blog\Http\Controllers;
 
-use Blog\Repositories\ProjectRepository;
-use Blog\Services\ProjectService;
+use Blog\Repositories\ProjectTaskRepository;
+use Blog\Services\ProjectTaskService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
-class ProjectController extends Controller
+class ProjectTaskController extends Controller
 {
 
     /**
-     * @var ProjectRepository
+     * @var ProjectTaskRepository
      */
     private $repository;
     /**
-     * @var ProjectService
+     * @var ProjectTaskService
      */
     private $service;
 
     /**
-     * ProjectController constructor.
-     * @param ProjectRepository $repository
-     * @param ProjectService $service
+     * ProjectNoteController constructor.
+     * @param ProjectTaskRepository $repository
+     * @param ProjectTaskService $service
      */
-    public function __construct(ProjectRepository $repository, ProjectService $service)
+    public function __construct(ProjectTaskRepository $repository, ProjectTaskService $service)
     {
         $this->repository = $repository;
         $this->service = $service;
@@ -35,9 +35,9 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        return $this->repository->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
+        return $this->repository->findWhere(['project_id' => $id]);
     }
 
     /**
@@ -67,14 +67,14 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $taskId)
     {
         try {
-            return $this->repository->find($id);
+            return $this->repository->findWhere(['project_id' => $id, 'id' => $taskId]);
         } catch (ModelNotFoundException $e) {
-            return ['erro' => true, 'message' => 'Projeto não encontrado'];
+            return ['erro' => true, 'message' => 'Tarefa não encontrada'];
         } catch (\Exception $e) {
-            return ['error'=> true, 'message' => 'Ocorreu algum erro ao buscar o Projeto.'];
+            return ['error'=> true, 'message' => 'Ocorreu algum erro ao buscar a Tarefa.'];
         }
     }
 
@@ -93,35 +93,33 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $taskId)
     {
         try {
-            return $this->service->update($request->all(), $id);
+            return $this->service->update($request->all(), $taskId);
         } catch (ModelNotFoundException $e) {
-            return ['error'=>true, 'message' => 'Projeto não encontrado.'];
+            return ['error'=>true, 'message' => 'Tarefa do Projeto não encontrada.'];
         } catch (\Exception $e) {
-            return ['error'=>true, 'message' => 'Ocorreu algum erro ao atualizar o Projeto.'];
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao atualizar a Tarefa do Projeto.'];
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $taskId)
     {
         try {
-            $this->repository->delete($id);
-            return ['success' => true, 'message' => 'Projeto excluido com sucesso!'];
+            $this->repository->delete($taskId);
+            return ['success' => true, 'message' => 'Tarefa do Projeto excluida com sucesso!'];
         } catch (ModelNotFoundException $e) {
-            return ['error'=>true, 'message' => 'Projeto não encontrado.'];
+            return ['error'=>true, 'message' => 'Tarefa do Projeto não encontrada.'];
         } catch (\Exception $e) {
-            return ['error'=>true, 'message' => 'Ocorreu algum erro ao excluir o Projeto.'];
+            return ['error'=>true, 'message' => 'Ocorreu algum erro ao excluir a Tarefa do Projeto.'];
         }
     }
 }

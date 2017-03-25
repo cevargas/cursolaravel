@@ -27,13 +27,21 @@ Route::group(['middleware'=>'oauth'], function(){
         Route::resource('project', 'ProjectController', ['except' => ['create', 'edit']]);
 
         Route::Group(['prefix'=>'project'], function(){
-            Route::get('{id}/note', 'ProjectNoteController@index');
-            Route::post('{id}/note', 'ProjectNoteController@store');
-            Route::get('{id}/note/{noteId}', 'ProjectNoteController@show');
-            Route::put('{id}/note/{noteId}', 'ProjectNoteController@update');
-            Route::delete('{id}/note/{noteId}', 'ProjectNoteController@destroy');
+            Route::get('{id}/notes', 'ProjectNoteController@index');
+            Route::post('{id}/notes', 'ProjectNoteController@store');
+            Route::get('{id}/notes/{noteId}', 'ProjectNoteController@show');
+            Route::put('{id}/notes/{noteId}', 'ProjectNoteController@update');
+            Route::delete('{id}/notes/{noteId}', 'ProjectNoteController@destroy');
+
+            Route::get('{id}/tasks', 'ProjectTaskController@index');
+            Route::post('{id}/tasks', 'ProjectTaskController@store');
+            Route::get('{id}/tasks/{taskId}', 'ProjectTaskController@show');
+            Route::put('{id}/tasks/{taskId}', 'ProjectTaskController@update');
+            Route::delete('{id}/tasks/{taskId}', 'ProjectTaskController@destroy');
 
             Route::post('{id}/file', 'ProjectFileController@store');
+
+            Route::post('{id}/members', 'ProjectMemberController@index');
         });
     });
 });
